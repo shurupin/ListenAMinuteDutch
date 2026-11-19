@@ -1,0 +1,198 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Reader from '../../components/Reader';
+import vocab from '../../data/vocab.json';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  // How many lessons each lemma appears in (whole corpus).
+  const counts: Record<string, number> = {};
+  for (const l of lessons) {
+    const keys = new Set(l.data.paragraphs.flatMap((p) => p.sentences.flatMap((s) => s.tokens.map((t) => t.key))));
+    for (const k of keys) if (k) counts[k] = (counts[k] ?? 0) + 1;
+  }
+  return lessons.map((lesson) => ({ params: { slug: lesson.id }, props: { lesson, counts } }));
+}
+
+const { lesson, counts } = Astro.props;
+const keys = new Set(lesson.data.paragraphs.flatMap((p) => p.sentences.flatMap((s) => s.tokens.map((t) => t.key ?? ''))));
+const v = vocab as Record<string, { ru: string }>;
+const gloss: Record<string, string> = {};
+const lessonCounts: Record<string, number> = {};
+for (const k of keys) {
+  if (!k) continue;
+  if (v[k]?.ru) gloss[k] = v[k].ru;
+  lessonCounts[k] = counts[k] ?? 1;
+}
+---
+
+<Base title={`${lesson.data.title} · Minuutje`} reading>
+  <p class="crumbs"><span class="level">{lesson.data.level}</span> <span class="muted">{lesson.data.topic}</span></p>
+  <h1 lang="nl">{lesson.data.title}</h1>
+  <Reader client:load slug={lesson.id} data={lesson.data} gloss={gloss} counts={lessonCounts} />
+</Base>
+
+<style is:global>
+  .crumbs { margin: 0; display: flex; gap: 8px; align-items: center; }
+  h1 { margin: 4px 0 12px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  /* members of the sentence. Solid, double, dashed and wavy are native underlines; CSS has no
+     dash-dot, so обстоятельство is drawn as a background at the same depth (--ul-gap). */
+  .syn {
+    --ul-gap: 0.22em;
+    text-decoration-line: underline; text-decoration-thickness: 1.5px;
+    text-underline-offset: var(--ul-gap); text-decoration-skip-ink: none;
+  }
+  .syn-S { text-decoration-style: solid; }
+  .syn-P { text-decoration-style: double; }
+  .syn-O { text-decoration-style: dashed; }
+  .syn-A { text-decoration-style: wavy; text-decoration-thickness: 1.3px; }
+  .syn-D {
+    text-decoration-line: none;
+    background-image: repeating-linear-gradient(to right,
+      currentColor 0 7px, transparent 7px 10px, currentColor 10px 12px, transparent 12px 15px);
+    background-repeat: no-repeat; background-size: 100% 1.5px; background-position: 0 100%;
+    /* the box ends ~0.254em below the baseline (system UI font descent); extend it so the
+       line lands where the native underlines are: baseline + --ul-gap + 1.5px */
+    padding-bottom: max(0px, calc(var(--ul-gap) + 1.5px - 0.254em));
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  /* with the analysis on, frequency keeps its tint but not its underline */
+  /* no inline padding either: it splits an underline into word and space pieces at different depths */
+  .syntax .text .w { box-shadow: none; padding: 0; }
+  .syntax-legend .syn { padding-left: 2px; padding-right: 2px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.85rem; margin-bottom: 8px; }
+
+  .text { font-size: 1.6rem; line-height: 2; }
+  /* framed paragraph, its play button outside the frame at the top-right */
+  .para { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 16px; }
+  /* wide screens: the frame itself is centred, its play button hangs outside on the right */
+  @media (min-width: 840px) { .para { margin-right: -38px; } }
+  .para-box {
+    flex: 1; min-width: 0;
+    border: 1.5px solid var(--frame); border-radius: 8px; padding: 8px 12px 6px;
+  }
+  .para-play {
+    flex: none; width: 30px; height: 30px; padding: 0; color: var(--accent);
+  }
+  /* all media buttons: icon centred exactly (flex centring + symmetric SVG, no padding) */
+  .para-play, .s-play, .controls .play, .controls button.icon, .controls .repeat {
+    display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 0;
+  }
+  .ico { display: block; flex: none; }
+  /* pill buttons with an icon + label: one height, icon and text centred on one axis */
+  button.pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    height: 34px; padding: 0 14px; line-height: 1; white-space: nowrap;
+  }
+  button.pill .ico { flex: none; }
+  /* the glyphs sit inside their square with some empty margin: cancel it so the visible
+     padding is 15px on both sides and the icon-text gap is the same (~8px) in every pill */
+  button.pill-play .ico { margin: 0 -1.3px 0 -3.8px; }
+  button.pill-star .ico { margin: 0 -0.3px 0 -1.3px; }
+  button.pill.on { color: var(--accent); }
+  button.pill.on span { color: var(--text); }
+  .s-play {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; padding: 0;
+    color: var(--accent);
+    border: 1px solid var(--border); border-radius: 50%; background: var(--surface);
+  }
+  .s-play:hover, .s-play.on { border-color: var(--accent); background: var(--accent-soft); }
+  /* restart + pause/continue, side by side before the sentence */
+  .s-ctl { display: inline-flex; gap: 4px; margin-right: 6px; vertical-align: 0.15em; }
+  .sent { border-radius: 6px; transition: background-color 0.2s; }
+  .sent.cur { background: color-mix(in srgb, var(--accent-soft) 60%, transparent); }
+  .sents .sent { display: block; margin-bottom: 6px; } /* every playable sentence on its own line */
+  .tr { display: block; font-size: 0.95rem; line-height: 1.45; color: var(--muted); margin: 0 0 0 66px; }
+  .tr.en { margin-top: -5px; } /* pull English closer to the Dutch line above */
+  .tr.en + .tr.ru { margin-top: 1px; }
+  .tr.ru { margin-bottom: 4px; }
+
+  .w { cursor: pointer; border-radius: 4px; padding: 1px 1px; }
+  .w:hover { outline: 1px solid var(--muted); }
+  .freq .w.b1, .legend .w.b1, .card .w.b1 { background: var(--b1-bg); box-shadow: inset 0 -2px var(--b1); }
+  .freq .w.b2, .legend .w.b2, .card .w.b2 { background: var(--b2-bg); box-shadow: inset 0 -2px var(--b2); }
+  .freq .w.b3, .legend .w.b3, .card .w.b3 { background: var(--b3-bg); box-shadow: inset 0 -2px var(--b3); }
+  .freq .w.b4, .legend .w.b4, .card .w.b4 { background: var(--b4-bg); box-shadow: inset 0 -2px var(--b4); }
+  .legend .w, .card .w { cursor: default; padding: 1px 8px; }
+  .w.act, .freq .w.act { background: var(--active); }
+  .w.sel { outline: 2px solid var(--accent); }
+
+  .player, .card {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    width: min(calc(var(--page-w, 760px) - 32px), calc(100% - 32px));
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.12);
+  }
+  .player { bottom: 12px; padding: 8px 12px 10px; }
+  .player input[type='range'] { width: 100%; accent-color: var(--accent); margin: 0 0 4px; }
+  /* three columns: time | transport (exactly centred in the player) | voice + speed */
+  .controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+  .controls .time { justify-self: start; font-variant-numeric: tabular-nums; font-size: 0.9rem; white-space: nowrap; }
+  .controls .transport { display: flex; align-items: center; gap: 8px; }
+  .controls .transport > * { flex: none; }
+  .controls .settings { justify-self: end; display: flex; align-items: center; gap: 8px; }
+  .controls .play { flex: none; width: 44px; height: 44px; border-radius: 50%; }
+  .controls button.icon { width: 36px; height: 36px; border-radius: 50%; }
+  .controls .repeat { width: 36px; height: 36px; border-radius: 50%; }
+  /* voice + speed: right-aligned pair of 34px pills in the player */
+  /* dropdown: native arrow hidden, own chevron. Visible gaps: 14px | name | 6px | chevron | 14px
+     (the chevron glyph sits ~4px inside its 14px box, hence right: 11px / padding-right: 26px) */
+  .controls .voice { position: relative; display: inline-flex; align-items: center; }
+  .controls .voice select {
+    appearance: none; -webkit-appearance: none;
+    height: 34px; padding: 0 26px 0 14px; margin: 0;
+    font: inherit; line-height: normal; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px; cursor: pointer;
+  }
+  .controls .voice select:hover { border-color: var(--muted); }
+  .controls .voice .ico {
+    position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+    pointer-events: none; color: var(--muted);
+  }
+  /* speed: [-] 0.70x [+] — the value block sits exactly between the two buttons */
+  .speed {
+    display: inline-flex; align-items: center; height: 34px; padding: 0 2px;
+    border: 1px solid var(--border); border-radius: 999px; background: var(--surface);
+  }
+  .speed .step {
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+    width: 30px; height: 30px; padding: 0; border: none; border-radius: 50%; background: none;
+    color: var(--text); touch-action: manipulation; user-select: none;
+  }
+  .speed .step:hover { color: var(--accent); background: var(--accent-soft); }
+  .speed .val { display: inline-flex; align-items: baseline; padding: 0 2px; }
+  .speed input {
+    field-sizing: content; width: 3.4ch; min-width: 3.4ch; padding: 0; margin: 0;
+    border: none; background: none; color: var(--text); font: inherit; line-height: normal;
+    font-variant-numeric: tabular-nums; text-align: right;
+  }
+  .speed input:focus { outline: none; }
+  .speed .val:focus-within { box-shadow: inset 0 -1.5px var(--accent); }
+  .speed .x { color: var(--muted); margin-left: 1px; }
+  button.icon { border: none; background: none; padding: 6px 8px; font-size: 1.05rem; }
+
+  .card { bottom: 108px; padding: 12px 16px; z-index: 2; }
+  .card-head { display: flex; align-items: center; gap: 8px; }
+  .card-word { flex: 1; font-size: 1.25rem; }
+  .card-word .pos { font-size: 0.9rem; }
+  .card-ru { font-size: 1.1rem; margin: 4px 0 8px 44px; }
+  .card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.9rem; margin-left: 44px; }
+  .card-meta button:first-of-type { margin-left: auto; }
+  @media (max-width: 520px) {
+    .text { font-size: 1.4rem; }
+    .para { gap: 6px; }
+    .para-box { padding: 6px 8px 4px; }
+    .card-ru, .card-meta { margin-left: 0; }
+    .controls .time { font-size: 0.8rem; }
+  }
+  /* narrow screens: playback buttons on the first row, voice + speed on the second */
+  @media (max-width: 600px) {
+    .controls { row-gap: 6px; column-gap: 4px; }
+    .controls .transport { gap: 4px; }
+    .controls .settings { grid-column: 1 / -1; justify-self: center; }
+    .card { bottom: 150px; }
+  }
+</style>

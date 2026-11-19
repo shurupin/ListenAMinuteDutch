@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import SavedWords from '../components/SavedWords';
+---
+
+<Base title="Мои слова · Minuutje">
+  <h1>Мои слова</h1>
+  <SavedWords client:load />
+</Base>
+
+<style is:global>
+  .saved { list-style: none; padding: 0; display: grid; gap: 6px; }
+  .saved li {
+    display: grid; grid-template-columns: auto minmax(90px, 1fr) 2fr auto auto; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 8px;
+  }
+  .saved .lemma { font-weight: 600; font-size: 1.1rem; }
+  .saved .src { font-size: 0.85rem; }
+  button.icon { border: none; background: none; padding: 6px 8px; font-size: 1.05rem; }
+  @media (max-width: 520px) {
+    .saved li { grid-template-columns: auto 1fr auto; }
+    .saved .ru { grid-column: 2; }
+    .saved .src { display: none; }
+  }
+</style>

@@ -1,0 +1,657 @@
+{
+ "aannemen|VERB": {
+  "lemma": "aannemen",
+  "pos": "VERB",
+  "ru": "предполагать; принимать (ik neem aan — полагаю)"
+ },
+ "aantal|NOUN": {
+  "lemma": "aantal",
+  "pos": "NOUN",
+  "ru": "количество, число"
+ },
+ "acht|NUM": {
+  "lemma": "acht",
+  "pos": "NUM",
+  "ru": "восемь"
+ },
+ "afvragen|VERB": {
+  "lemma": "afvragen",
+  "pos": "VERB",
+  "ru": "задаваться вопросом (zich afvragen)"
+ },
+ "als|SCONJ": {
+  "lemma": "als",
+  "pos": "SCONJ",
+  "ru": "когда, если"
+ },
+ "altijd|ADV": {
+  "lemma": "altijd",
+  "pos": "ADV",
+  "ru": "всегда"
+ },
+ "al|ADV": {
+  "lemma": "al",
+  "pos": "ADV",
+  "ru": "уже; niet al te — не слишком"
+ },
+ "anders|ADV": {
+  "lemma": "anders",
+  "pos": "ADV",
+  "ru": "иначе, по-другому"
+ },
+ "belanden|VERB": {
+  "lemma": "belanden",
+  "pos": "VERB",
+  "ru": "оказаться, попасть (куда-то)"
+ },
+ "bezorgd|ADJ": {
+  "lemma": "bezorgd",
+  "pos": "ADJ",
+  "ru": "обеспокоенный; bezorgd zijn — волноваться"
+ },
+ "bijna|ADV": {
+  "lemma": "bijna",
+  "pos": "ADV",
+  "ru": "почти"
+ },
+ "brood|NOUN": {
+  "lemma": "brood",
+  "pos": "NOUN",
+  "ru": "хлеб"
+ },
+ "bus|NOUN": {
+  "lemma": "bus",
+  "pos": "NOUN",
+  "ru": "автобус"
+ },
+ "collega|NOUN": {
+  "lemma": "collega",
+  "pos": "NOUN",
+  "ru": "коллега"
+ },
+ "daarna|ADV": {
+  "lemma": "daarna",
+  "pos": "ADV",
+  "ru": "потом, после этого"
+ },
+ "dag|NOUN": {
+  "lemma": "dag",
+  "pos": "NOUN",
+  "ru": "день"
+ },
+ "dat|PRON": {
+  "lemma": "dat",
+  "pos": "PRON",
+  "ru": "это, тот"
+ },
+ "dat|SCONJ": {
+  "lemma": "dat",
+  "pos": "SCONJ",
+  "ru": "что (союз)"
+ },
+ "denken|VERB": {
+  "lemma": "denken",
+  "pos": "VERB",
+  "ru": "думать"
+ },
+ "de|DET": {
+  "lemma": "de",
+  "pos": "DET",
+  "ru": "(опр. артикль de)"
+ },
+ "doen|VERB": {
+  "lemma": "doen",
+  "pos": "VERB",
+  "ru": "делать; pijn doen — болеть, причинять боль"
+ },
+ "doordat|SCONJ": {
+  "lemma": "doordat",
+  "pos": "SCONJ",
+  "ru": "из-за того что, потому что"
+ },
+ "douche|NOUN": {
+  "lemma": "douche",
+  "pos": "NOUN",
+  "ru": "душ"
+ },
+ "drinken|VERB": {
+  "lemma": "drinken",
+  "pos": "VERB",
+  "ru": "пить"
+ },
+ "duim|NOUN": {
+  "lemma": "duim",
+  "pos": "NOUN",
+  "ru": "большой палец (руки)"
+ },
+ "echt|ADJ": {
+  "lemma": "echt",
+  "pos": "ADJ",
+  "ru": "настоящий; действительно"
+ },
+ "een|DET": {
+  "lemma": "een",
+  "pos": "DET",
+  "ru": "(неопр. артикль) один"
+ },
+ "eerst|ADV": {
+  "lemma": "eerst",
+  "pos": "ADV",
+  "ru": "сначала"
+ },
+ "elkaar|PRON": {
+  "lemma": "elkaar",
+  "pos": "PRON",
+  "ru": "друг друга"
+ },
+ "elk|DET": {
+  "lemma": "elk",
+  "pos": "DET",
+  "ru": "каждый"
+ },
+ "en|CCONJ": {
+  "lemma": "en",
+  "pos": "CCONJ",
+  "ru": "и"
+ },
+ "ergens|ADV": {
+  "lemma": "ergens",
+  "pos": "ADV",
+  "ru": "где-то; ergens tegen — обо что-то"
+ },
+ "erg|ADJ": {
+  "lemma": "erg",
+  "pos": "ADJ",
+  "ru": "плохой, сильный; het ergst — хуже всего"
+ },
+ "ernstig|ADJ": {
+  "lemma": "ernstig",
+  "pos": "ADJ",
+  "ru": "серьёзный"
+ },
+ "er|ADV": {
+  "lemma": "er",
+  "pos": "ADV",
+  "ru": "там; er goed in zijn — хорошо уметь"
+ },
+ "eten|VERB": {
+  "lemma": "eten",
+  "pos": "VERB",
+  "ru": "есть, кушать"
+ },
+ "fietsen|VERB": {
+  "lemma": "fietsen",
+  "pos": "VERB",
+  "ru": "ехать на велосипеде"
+ },
+ "gebeuren|VERB": {
+  "lemma": "gebeuren",
+  "pos": "VERB",
+  "ru": "происходить, случаться"
+ },
+ "gevaarlijk|ADJ": {
+  "lemma": "gevaarlijk",
+  "pos": "ADJ",
+  "ru": "опасный"
+ },
+ "goedemorgen|ADV": {
+  "lemma": "goedemorgen",
+  "pos": "ADV",
+  "ru": "доброе утро"
+ },
+ "goed|ADJ": {
+  "lemma": "goed",
+  "pos": "ADJ",
+  "ru": "хороший; хорошо"
+ },
+ "groot|ADJ": {
+  "lemma": "groot",
+  "pos": "ADJ",
+  "ru": "большой"
+ },
+ "hamer|NOUN": {
+  "lemma": "hamer",
+  "pos": "NOUN",
+  "ru": "молоток"
+ },
+ "hebben|AUX": {
+  "lemma": "hebben",
+  "pos": "AUX",
+  "ru": "иметь (вспом. глагол перфекта)"
+ },
+ "hebben|VERB": {
+  "lemma": "hebben",
+  "pos": "VERB",
+  "ru": "иметь"
+ },
+ "heel|ADJ": {
+  "lemma": "heel",
+  "pos": "ADJ",
+  "ru": "очень; целый"
+ },
+ "het|DET": {
+  "lemma": "het",
+  "pos": "DET",
+  "ru": "(опр. артикль het)"
+ },
+ "het|PRON": {
+  "lemma": "het",
+  "pos": "PRON",
+  "ru": "оно, это"
+ },
+ "hij|PRON": {
+  "lemma": "hij",
+  "pos": "PRON",
+  "ru": "он"
+ },
+ "hoeveel|NUM": {
+  "lemma": "hoeveel",
+  "pos": "NUM",
+  "ru": "сколько"
+ },
+ "hoe|ADV": {
+  "lemma": "hoe",
+  "pos": "ADV",
+  "ru": "как; hoe vaak — как часто"
+ },
+ "hoofd|NOUN": {
+  "lemma": "hoofd",
+  "pos": "NOUN",
+  "ru": "голова"
+ },
+ "huis|NOUN": {
+  "lemma": "huis",
+  "pos": "NOUN",
+  "ru": "дом"
+ },
+ "ik|PRON": {
+  "lemma": "ik",
+  "pos": "PRON",
+  "ru": "я"
+ },
+ "in|ADP": {
+  "lemma": "in",
+  "pos": "ADP",
+  "ru": "в"
+ },
+ "kaas|NOUN": {
+  "lemma": "kaas",
+  "pos": "NOUN",
+  "ru": "сыр"
+ },
+ "kantoorwerk|NOUN": {
+  "lemma": "kantoorwerk",
+  "pos": "NOUN",
+  "ru": "офисная работа"
+ },
+ "keer|NOUN": {
+  "lemma": "keer",
+  "pos": "NOUN",
+  "ru": "раз; elke keer — каждый раз"
+ },
+ "keuken|NOUN": {
+  "lemma": "keuken",
+  "pos": "NOUN",
+  "ru": "кухня"
+ },
+ "koffie|NOUN": {
+  "lemma": "koffie",
+  "pos": "NOUN",
+  "ru": "кофе"
+ },
+ "komen|VERB": {
+  "lemma": "komen",
+  "pos": "VERB",
+  "ru": "приходить; komt doordat — происходит из-за того, что"
+ },
+ "kop|NOUN": {
+  "lemma": "kop",
+  "pos": "NOUN",
+  "ru": "чашка; голова"
+ },
+ "kwijtraken|VERB": {
+  "lemma": "kwijtraken",
+  "pos": "VERB",
+  "ru": "терять"
+ },
+ "laat|ADJ": {
+  "lemma": "laat",
+  "pos": "ADJ",
+  "ru": "поздний; laatste — последний"
+ },
+ "lang|ADJ": {
+  "lemma": "lang",
+  "pos": "ADJ",
+  "ru": "длинный; долго"
+ },
+ "leven|NOUN": {
+  "lemma": "leven",
+  "pos": "NOUN",
+  "ru": "жизнь"
+ },
+ "maar|CCONJ": {
+  "lemma": "maar",
+  "pos": "CCONJ",
+  "ru": "но"
+ },
+ "maken|VERB": {
+  "lemma": "maken",
+  "pos": "VERB",
+  "ru": "делать; zich zorgen maken — волноваться"
+ },
+ "meestal|ADV": {
+  "lemma": "meestal",
+  "pos": "ADV",
+  "ru": "обычно, чаще всего"
+ },
+ "met|ADP": {
+  "lemma": "met",
+  "pos": "ADP",
+  "ru": "с"
+ },
+ "me|PRON": {
+  "lemma": "me",
+  "pos": "PRON",
+  "ru": "меня, мне, себя"
+ },
+ "mijn|PRON": {
+  "lemma": "mijn",
+  "pos": "PRON",
+  "ru": "мой"
+ },
+ "moeder|NOUN": {
+  "lemma": "moeder",
+  "pos": "NOUN",
+  "ru": "мать, мама"
+ },
+ "naar|ADP": {
+  "lemma": "naar",
+  "pos": "ADP",
+  "ru": "к, в (направление)"
+ },
+ "nemen|VERB": {
+  "lemma": "nemen",
+  "pos": "VERB",
+  "ru": "брать; принимать (душ)"
+ },
+ "niet|ADV": {
+  "lemma": "niet",
+  "pos": "ADV",
+  "ru": "не"
+ },
+ "ochtend|NOUN": {
+  "lemma": "ochtend",
+  "pos": "NOUN",
+  "ru": "утро"
+ },
+ "om|ADP": {
+  "lemma": "om",
+  "pos": "ADP",
+  "ru": "в (о времени); вокруг"
+ },
+ "ongelooflijk|ADJ": {
+  "lemma": "ongelooflijk",
+  "pos": "ADJ",
+  "ru": "невероятный"
+ },
+ "ongeluk|NOUN": {
+  "lemma": "ongeluk",
+  "pos": "NOUN",
+  "ru": "несчастный случай, авария; несчастье"
+ },
+ "ontbijten|VERB": {
+  "lemma": "ontbijten",
+  "pos": "VERB",
+  "ru": "завтракать"
+ },
+ "ontmoeten|VERB": {
+  "lemma": "ontmoeten",
+  "pos": "VERB",
+  "ru": "встречать; elkaar ontmoeten — встречаться"
+ },
+ "ook|ADV": {
+  "lemma": "ook",
+  "pos": "ADV",
+  "ru": "тоже, также"
+ },
+ "opruimen|VERB": {
+  "lemma": "opruimen",
+  "pos": "VERB",
+  "ru": "убирать, наводить порядок"
+ },
+ "opstaan|VERB": {
+  "lemma": "opstaan",
+  "pos": "VERB",
+  "ru": "вставать"
+ },
+ "op|ADP": {
+  "lemma": "op",
+  "pos": "ADP",
+  "ru": "на"
+ },
+ "over|ADP": {
+  "lemma": "over",
+  "pos": "ADP",
+  "ru": "о, про; через"
+ },
+ "paar|NOUN": {
+  "lemma": "paar",
+  "pos": "NOUN",
+  "ru": "пара; een paar — несколько"
+ },
+ "pijnlijk|ADJ": {
+  "lemma": "pijnlijk",
+  "pos": "ADJ",
+  "ru": "болезненный"
+ },
+ "pijn|NOUN": {
+  "lemma": "pijn",
+  "pos": "NOUN",
+  "ru": "боль"
+ },
+ "regenen|VERB": {
+  "lemma": "regenen",
+  "pos": "VERB",
+  "ru": "идти (о дожде)"
+ },
+ "rustig|ADJ": {
+  "lemma": "rustig",
+  "pos": "ADJ",
+  "ru": "спокойный, спокойно"
+ },
+ "samen|ADV": {
+  "lemma": "samen",
+  "pos": "ADV",
+  "ru": "вместе"
+ },
+ "slaan|VERB": {
+  "lemma": "slaan",
+  "pos": "VERB",
+  "ru": "бить, ударять"
+ },
+ "slapen|VERB": {
+  "lemma": "slapen",
+  "pos": "VERB",
+  "ru": "спать"
+ },
+ "stoten|VERB": {
+  "lemma": "stoten",
+  "pos": "VERB",
+  "ru": "ударять(ся), толкать"
+ },
+ "tegen|ADP": {
+  "lemma": "tegen",
+  "pos": "ADP",
+  "ru": "против; (сказать) кому-то"
+ },
+ "tel|NOUN": {
+  "lemma": "tel",
+  "pos": "NOUN",
+  "ru": "счёт; de tel kwijtraken — сбиться со счёта"
+ },
+ "te|ADP": {
+  "lemma": "te",
+  "pos": "ADP",
+  "ru": "(частица перед инфинитивом); слишком"
+ },
+ "te|ADV": {
+  "lemma": "te",
+  "pos": "ADV",
+  "ru": "слишком"
+ },
+ "toch|ADV": {
+  "lemma": "toch",
+  "pos": "ADV",
+  "ru": "всё же, тем не менее"
+ },
+ "uur|NOUN": {
+  "lemma": "uur",
+  "pos": "NOUN",
+  "ru": "час"
+ },
+ "vaak|ADJ": {
+  "lemma": "vaak",
+  "pos": "ADJ",
+  "ru": "часто"
+ },
+ "van|ADP": {
+  "lemma": "van",
+  "pos": "ADP",
+  "ru": "от, из; (принадлежность) — of"
+ },
+ "veel|ADV": {
+  "lemma": "veel",
+  "pos": "ADV",
+  "ru": "много; de meeste — большинство"
+ },
+ "veel|DET": {
+  "lemma": "veel",
+  "pos": "DET",
+  "ru": "много"
+ },
+ "veel|PRON": {
+  "lemma": "veel",
+  "pos": "PRON",
+  "ru": "много; de meeste — большинство"
+ },
+ "verhaal|NOUN": {
+  "lemma": "verhaal",
+  "pos": "NOUN",
+  "ru": "история, рассказ"
+ },
+ "verkeersongeluk|NOUN": {
+  "lemma": "verkeersongeluk",
+  "pos": "NOUN",
+  "ru": "дорожная авария, ДТП"
+ },
+ "vertellen|VERB": {
+  "lemma": "vertellen",
+  "pos": "VERB",
+  "ru": "рассказывать"
+ },
+ "ver|ADJ": {
+  "lemma": "ver",
+  "pos": "ADJ",
+  "ru": "далёкий; далеко"
+ },
+ "vriendin|NOUN": {
+  "lemma": "vriendin",
+  "pos": "NOUN",
+  "ru": "подруга, девушка"
+ },
+ "vriend|NOUN": {
+  "lemma": "vriend",
+  "pos": "NOUN",
+  "ru": "друг"
+ },
+ "waarbij|ADV": {
+  "lemma": "waarbij",
+  "pos": "ADV",
+  "ru": "при котором, во время которого"
+ },
+ "wandelen|VERB": {
+  "lemma": "wandelen",
+  "pos": "VERB",
+  "ru": "гулять, ходить пешком; een wandelend ongeluk — ходячее несчастье"
+ },
+ "weekend|NOUN": {
+  "lemma": "weekend",
+  "pos": "NOUN",
+  "ru": "выходные"
+ },
+ "wel|ADV": {
+  "lemma": "wel",
+  "pos": "ADV",
+  "ru": "(усиление) всё-таки, же; хорошо"
+ },
+ "werkgerelateerd|ADJ": {
+  "lemma": "werkgerelateerd",
+  "pos": "ADJ",
+  "ru": "связанный с работой"
+ },
+ "werk|NOUN": {
+  "lemma": "werk",
+  "pos": "NOUN",
+  "ru": "работа"
+ },
+ "weten|VERB": {
+  "lemma": "weten",
+  "pos": "VERB",
+  "ru": "знать"
+ },
+ "we|PRON": {
+  "lemma": "we",
+  "pos": "PRON",
+  "ru": "мы"
+ },
+ "zeggen|VERB": {
+  "lemma": "zeggen",
+  "pos": "VERB",
+  "ru": "говорить, сказать"
+ },
+ "zeven|NUM": {
+  "lemma": "zeven",
+  "pos": "NUM",
+  "ru": "семь"
+ },
+ "ze|PRON": {
+  "lemma": "ze",
+  "pos": "PRON",
+  "ru": "они; она"
+ },
+ "ziekenhuis|NOUN": {
+  "lemma": "ziekenhuis",
+  "pos": "NOUN",
+  "ru": "больница"
+ },
+ "zien|VERB": {
+  "lemma": "zien",
+  "pos": "VERB",
+  "ru": "видеть; elkaar zien — встречаться"
+ },
+ "zijn|AUX": {
+  "lemma": "zijn",
+  "pos": "AUX",
+  "ru": "быть"
+ },
+ "zijn|PRON": {
+  "lemma": "zijn",
+  "pos": "PRON",
+  "ru": "его"
+ },
+ "zorg|NOUN": {
+  "lemma": "zorg",
+  "pos": "NOUN",
+  "ru": "забота; zich zorgen maken — волноваться"
+ },
+ "zo|ADV": {
+  "lemma": "zo",
+  "pos": "ADV",
+  "ru": "так, такой"
+ },
+ "zullen|AUX": {
+  "lemma": "zullen",
+  "pos": "AUX",
+  "ru": "вспом. глагол будущего; zou — бы"
+ }
+}

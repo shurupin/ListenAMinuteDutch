@@ -1,0 +1,128 @@
+---
+interface Props {
+  title: string;
+  wide?: boolean;
+  /** lesson pages: content takes 2/3 of the window width */
+  reading?: boolean;
+}
+const { title, wide = false, reading = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <title>{title}</title>
+  </head>
+  <body class:list={{ wide, reading }}>
+    <header class="site">
+      <a class="brand" href={`${base}/`}>Minuutje<span> · голландский на слух</span></a>
+      <nav>
+        <a href={`${base}/`}>Уроки</a>
+        <a href={`${base}/words`}>Мои слова</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --text: #1d1f23;
+    --muted: #6b6f78;
+    --border: #e4e1da;
+    --accent: #e8590c; /* Dutch orange */
+    --accent-soft: #fff0e6;
+    --active: #ffe08a;
+    --b1: #2f9e44;
+    --b2: #1c7ed6;
+    --b3: #e67700;
+    --b4: #ae3ec9;
+    --b1-bg: #ebfbee;
+    --b2-bg: #e7f5ff;
+    --b3-bg: #fff4e6;
+    --b4-bg: #f8f0fc;
+    --radius: 12px;
+    --link: #1a3fc4;
+    --frame: #111111;
+    --tone-1: #cdf5dc;
+    --tone-2: #fbf8c8;
+    --tone-3: #f8d3f5;
+    --tone-head: #111111;
+    --page-tint: #d4f7d4;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bg: #15171b;
+      --surface: #1d2025;
+      --text: #e8e6e1;
+      --muted: #9a9ea8;
+      --border: #30343b;
+      --accent: #ff8a3d;
+      --accent-soft: #3a2616;
+      --active: #6b5512;
+      --b1: #69db7c;
+      --b2: #4dabf7;
+      --b3: #ffa94d;
+      --b4: #da77f2;
+      --b1-bg: #1b3022;
+      --b2-bg: #15283a;
+      --b3-bg: #3a2a14;
+      --b4-bg: #33203a;
+      --link: #9db8ff;
+      --frame: #c9c6bf;
+      --tone-1: #1d3327;
+      --tone-2: #33321c;
+      --tone-3: #3a2238;
+      --tone-head: #000000;
+      --page-tint: #102016;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    /* system UI font: SF Pro on Apple, Segoe UI on Windows, Roboto on Android */
+    font: 1rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  a { color: inherit; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px 16px 160px; }
+  header.site {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    max-width: 760px; margin: 0 auto; padding: 16px;
+  }
+  .brand { font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--accent); }
+  .brand span { color: var(--muted); font-weight: 400; font-size: 0.95rem; }
+  nav { display: flex; gap: 16px; }
+  nav a { text-decoration: none; color: var(--muted); }
+  nav a:hover { color: var(--text); }
+  body.wide main, body.wide header.site { max-width: 1200px; }
+  /* lesson pages: paragraph frame = 60% of the window, page content aligned to it */
+  body.reading { --frame-w: max(700px, 60vw); --page-w: calc(var(--frame-w) + 32px); }
+  body.reading main, body.reading header.site { max-width: var(--page-w); }
+  @media (max-width: 520px) { .brand span { display: none; } }
+
+  button {
+    font: inherit; color: inherit; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 12px;
+  }
+  button:hover { border-color: var(--muted); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.on { background: var(--accent-soft); border-color: var(--accent); }
+  .muted { color: var(--muted); }
+  .level {
+    display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 2px 8px;
+    border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+  }
+</style>

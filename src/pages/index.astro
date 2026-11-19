@@ -1,0 +1,135 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { LETTER_ROWS, TOPICS, topicSlug } from '../data/topics';
+
+const lessons = await getCollection('lessons');
+const lessonIds = new Set(lessons.map((l) => l.id));
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+type Topic = { en: string; nl: string; slug: string; hasLesson: boolean };
+const byLetter = new Map<string, Topic[]>();
+for (const [en, nl] of TOPICS) {
+  const slug = topicSlug(en);
+  const letter = en[0].toUpperCase();
+  if (!byLetter.has(letter)) byLetter.set(letter, []);
+  byLetter.get(letter)!.push({ en, nl, slug, hasLesson: lessonIds.has(slug) });
+}
+
+// Lessons that don't belong to any topic yet (e.g. the demo lesson).
+const topicSlugs = new Set(TOPICS.map(([en]) => topicSlug(en)));
+const otherLessons = lessons
+  .filter((l) => !topicSlugs.has(l.id))
+  .sort((a, b) => a.data.level.localeCompare(b.data.level) || a.data.order - b.data.order);
+
+const tone = (row: number, col: number) => ((((col - row) % 3) + 3) % 3) + 1;
+---
+
+<Base title="Minuutje · голландский на слух" wide>
+  <div class="panel">
+    <h1 class="hero">Minuutje</h1>
+    <p class="tagline">{TOPICS.length} тем · короткие тексты на голландском (A1–A2) с озвучкой · Luister maar!</p>
+
+    {LETTER_ROWS.map((row, r) => (
+      <div class="row">
+        {row.map((letters, c) => (
+          <div class={`col tone-${tone(r, c)}`}>
+            {letters.map((letter) => (
+              <section aria-label={letter}>
+                <h2 class="head">{letter}</h2>
+                <ul>
+                  {(byLetter.get(letter) ?? []).map((t) => (
+                    <li class:list={{ live: t.hasLesson }} data-slug={t.hasLesson ? t.slug : undefined}>
+                      <a href={t.hasLesson ? `${base}/lesson/${t.slug}` : '#'} class:list={{ empty: !t.hasLesson }}>
+                        {t.en}
+                      </a>
+                      <span class="nl" lang="nl">{t.nl}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        ))}
+      </div>
+    ))}
+
+    {otherLessons.length > 0 && (
+      <section class="other">
+        <h2>Другие уроки</h2>
+        <ul>
+          {otherLessons.map((l) => (
+            <li data-slug={l.id}>
+              <span class="level">{l.data.level}</span>
+              <a href={`${base}/lesson/${l.id}`} lang="nl">{l.data.title}</a>
+              <span class="muted">{l.data.topic}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+</Base>
+
+<script>
+  import { load, KEY_DONE } from '../lib/shared';
+  const done = load<Record<string, number>>(KEY_DONE, {});
+  document.querySelectorAll<HTMLElement>('[data-slug]').forEach((el) => {
+    if (done[el.dataset.slug!]) el.classList.add('is-done');
+  });
+  // Topics without a lesson yet: keep them looking like links, but don't jump to "#".
+  document.querySelectorAll<HTMLAnchorElement>('a.empty').forEach((a) =>
+    a.addEventListener('click', (e) => e.preventDefault()),
+  );
+</script>
+
+<style is:global>
+  body.wide { background: var(--page-tint); }
+</style>
+
+<style>
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 16px 16px 24px; margin-top: 4px;
+  }
+  .hero { margin: 0; font-size: 2rem; line-height: 1.1; }
+  .tagline { margin: 4px 0 20px; font-weight: 700; color: #7a1f7a; }
+  @media (prefers-color-scheme: dark) { .tagline { color: #e29be2; } }
+
+  .row { --row: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 4px; margin-bottom: 20px; }
+  .col {
+    /* striped background keeps empty rows visible below shorter columns, like the classic table */
+    background: repeating-linear-gradient(to bottom, var(--tone) 0 calc(var(--row) - 1px), var(--surface) calc(var(--row) - 1px) var(--row));
+    min-width: 0;
+  }
+  .tone-1 { --tone: var(--tone-1); }
+  .tone-2 { --tone: var(--tone-2); }
+  .tone-3 { --tone: var(--tone-3); }
+  .head {
+    margin: 0; height: var(--row); line-height: var(--row); padding: 0 6px;
+    background: var(--tone-head); color: #fff; font-size: 0.9rem; font-weight: 400;
+  }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li {
+    height: var(--row); line-height: calc(var(--row) - 1px); padding: 0 6px;
+    display: flex; align-items: baseline; gap: 6px; white-space: nowrap; overflow: hidden;
+    font-size: 0.875rem;
+  }
+  li a { color: var(--link); flex: none; }
+  li .nl { color: var(--muted); font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; }
+  li:hover { background: color-mix(in srgb, var(--text) 7%, transparent); }
+  li.live a { font-weight: 700; }
+  li.live a::before { content: '● '; color: var(--b1); font-size: 0.7em; vertical-align: 0.15em; }
+  li.is-done a::after { content: ' ✓'; color: var(--b1); }
+
+  .other ul { display: grid; gap: 6px; }
+  .other li { height: auto; font-size: 1rem; overflow: visible; align-items: center; }
+  .other li:hover { background: none; }
+  .other li.is-done a::after { content: ' ✓'; color: var(--b1); }
+
+  @media (max-width: 720px) {
+    .row { grid-template-columns: 1fr; gap: 0; margin-bottom: 0; }
+    .col { background: var(--tone); }
+    li { border-bottom: 1px solid var(--surface); }
+  }
+</style>

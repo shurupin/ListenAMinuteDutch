@@ -1,0 +1,21 @@
+{
+  "title": "Mijn ochtend",
+  "level": "A1",
+  "topic": "Dagelijks leven",
+  "order": 1,
+  "overrides": {
+    "ontbijt": {
+      "lemma": "ontbijten",
+      "pos": "VERB"
+    }
+  },
+  "syntax": {
+    "3:in": "D",
+    "3:de": "D",
+    "3:keuken": "D",
+    "7:goedemorgen": "O",
+    "8:ochtend": "S",
+    "8:anders": "P",
+    "9:ontbijt": "P"
+  }
+}

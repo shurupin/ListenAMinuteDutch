@@ -1,0 +1,36 @@
+{
+  "title": "Ongelukken",
+  "level": "A2",
+  "topic": "Accidents",
+  "order": 1,
+  "overrides": {
+    "verkeersongelukken": {
+      "lemma": "verkeersongeluk",
+      "pos": "NOUN"
+    },
+    "beland": {
+      "lemma": "belanden",
+      "pos": "VERB"
+    },
+    "werkgerelateerde": {
+      "lemma": "werkgerelateerd",
+      "pos": "ADJ"
+    },
+    "keren": {
+      "lemma": "keer",
+      "pos": "NOUN"
+    },
+    "bezorgd": {
+      "lemma": "bezorgd",
+      "pos": "ADJ"
+    },
+    "veel": {
+      "lemma": "veel",
+      "pos": "DET"
+    }
+  },
+  "syntax": {
+    "9:ergens": "O",
+    "9:tegen": "O"
+  }
+}
