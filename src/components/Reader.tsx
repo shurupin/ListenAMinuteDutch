@@ -56,6 +56,8 @@ type Props = {
   data: RawLesson;
   gloss: Record<string, string>;
   counts: Record<string, number>;
+  /** English translations split into words with SUBTLEX-US frequency ranks; key "pi.si" or "pi" */
+  enWords?: Record<string, { spans: [number, number][]; ranks: (number | null)[] }>;
 };
 
 type Range = { start: number; end: number; loop: boolean };
@@ -71,9 +73,13 @@ const SYNTAX = [
 ];
 
 /** A translation with its words as spans; words in `hi` get the correspondence frame. */
-function Translation({ text, spans, hi, lang, onHover }: {
+/** English words among the this-many most frequent in SUBTLEX-US show their rank (1 = "you"). */
+const EN_TOP = 9999;
+
+function Translation({ text, spans, hi, lang, onHover, ranks }: {
   text: string; spans?: [number, number][]; hi?: number[]; lang: string;
   onHover?: (j: number | null) => void; // hovering a translation word highlights its unit too
+  ranks?: (number | null)[]; // SUBTLEX-US frequency rank of every word (null: not listed)
 }) {
   if (!spans?.length) return <span class={`tr ${lang}`} lang={lang}>{text}</span>;
   const parts = [];
@@ -87,6 +93,11 @@ function Translation({ text, spans, hi, lang, onHover }: {
         onMouseLeave={() => onHover?.(null)}
       >
         {text.slice(a, b)}
+        {ranks?.[j] != null && ranks[j]! <= EN_TOP && (
+          <sup class="enc" title="Место слова в частотном списке английского (SUBTLEX-US): 1 — самое частое">
+            {ranks[j]}
+          </sup>
+        )}
       </span>,
     );
     pos = b;
@@ -111,7 +122,7 @@ const PAD_AFTER = 0.08;
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 
-export default function Reader({ slug, data, gloss, counts }: Props) {
+export default function Reader({ slug, data, gloss, counts, enWords = {} }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const rangeRef = useRef<Range | null>(null);
 
@@ -539,7 +550,8 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
                           );
                         })}{' '}
                         {perSentence && s.en && (
-                          <Translation text={s.en} spans={s.enW} lang="en"
+                          <Translation text={s.en} spans={enWords[`${pi}.${si}`]?.spans ?? s.enW} lang="en"
+                            ranks={enWords[`${pi}.${si}`]?.ranks}
                             hi={aligned?.key === `${pi}.${si}` ? aligned.en : undefined}
                             onHover={(j) => setHoveredTr(j == null ? null : { key: `${pi}.${si}`, lang: 'en', j })} />
                         )}
@@ -552,7 +564,9 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
                     );
                   })}
                 </div>
-                {showTrans && !perSentence && p.en && <p class="tr en" lang="en">{p.en}</p>}
+                {showTrans && !perSentence && p.en && (
+                  <p class="tr-p"><Translation text={p.en} spans={enWords[String(pi)]?.spans} ranks={enWords[String(pi)]?.ranks} lang="en" /></p>
+                )}
                 {showTrans && !perSentence && p.ru && <p class="tr ru" lang="ru">{p.ru}</p>}
               </div>
               <button

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Reader from '../../components/Reader';
 import vocab from '../../data/vocab.json';
+import { englishWords } from '../../lib/enFrequency';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
@@ -25,12 +26,14 @@ for (const k of keys) {
   if (v[k]?.ru) gloss[k] = v[k].ru;
   lessonCounts[k] = counts[k] ?? 1;
 }
+// English words with their SUBTLEX-US frequency rank (computed here, at build time)
+const enWords = englishWords(lesson.data.paragraphs);
 ---
 
 <Base title={`${lesson.data.title} · Minuutje`} reading>
   <p class="crumbs"><span class="level">{lesson.data.level}</span> <span class="muted">{lesson.data.topic}</span></p>
   <h1 lang="nl">{lesson.data.title}</h1>
-  <Reader client:load slug={lesson.id} data={lesson.data} gloss={gloss} counts={lessonCounts} />
+  <Reader client:load slug={lesson.id} data={lesson.data} gloss={gloss} counts={lessonCounts} enWords={enWords} />
 </Base>
 
 <style is:global>
@@ -112,6 +115,13 @@ for (const k of keys) {
 
   .w { cursor: pointer; border-radius: 4px; padding: 1px 1px; }
   .w:hover { outline: 1px solid var(--muted); }
+  /* SUBTLEX-US frequency rank (1..9999) in the top-right corner of an English word;
+     line-height 0 so it does not make the line taller */
+  .tr.en .enc {
+    font-size: 0.62em; line-height: 0; vertical-align: 0.75em; margin-left: 1px;
+    color: var(--muted); opacity: 0.85; font-variant-numeric: tabular-nums;
+  }
+  .tr-p { margin: 0; }
   /* word correspondences: same frame as the hovered word, on the rest of its Dutch unit
      and on the matching English/Russian words */
   .w.al, .tr .tw.al { outline: 1px solid var(--muted); border-radius: 4px; }
