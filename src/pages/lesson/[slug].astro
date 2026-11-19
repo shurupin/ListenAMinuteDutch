@@ -112,6 +112,10 @@ for (const k of keys) {
 
   .w { cursor: pointer; border-radius: 4px; padding: 1px 1px; }
   .w:hover { outline: 1px solid var(--muted); }
+  /* word correspondences: same frame as the hovered word, on the rest of its Dutch unit
+     and on the matching English/Russian words */
+  .w.al, .tr .tw.al { outline: 1px solid var(--muted); border-radius: 4px; }
+  .tr .tw.al { outline-offset: 1px; }
   .freq .w.b1, .legend .w.b1, .card .w.b1 { background: var(--b1-bg); box-shadow: inset 0 -2px var(--b1); }
   .freq .w.b2, .legend .w.b2, .card .w.b2 { background: var(--b2-bg); box-shadow: inset 0 -2px var(--b2); }
   .freq .w.b3, .legend .w.b3, .card .w.b3 { background: var(--b3-bg); box-shadow: inset 0 -2px var(--b3); }
@@ -126,15 +130,44 @@ for (const k of keys) {
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
     box-shadow: 0 6px 24px rgb(0 0 0 / 0.12);
   }
-  .player { bottom: 12px; padding: 8px 12px 10px; }
-  .player input[type='range'] { width: 100%; accent-color: var(--accent); margin: 0 0 4px; }
+  .player { bottom: 12px; padding: 6px 12px 8px; }
+  .player .progress { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+  .player input[type='range'] { flex: 1; min-width: 0; width: 100%; accent-color: var(--accent); margin: 0; }
+  /* fold / unfold the player */
+  .player .fold {
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; padding: 0; border: none; border-radius: 50%; background: none;
+    color: var(--muted);
+  }
+  .player .fold:hover { color: var(--text); background: var(--accent-soft); }
+  .player .fold .up .ico { transform: rotate(180deg); }
+  /* minimised: a 38px pill (3px + 30px button + 3px + border) */
+  .player.mini {
+    width: auto; display: flex; align-items: center; gap: 8px;
+    padding: 3px 5px 3px 3px; border-radius: 999px;
+  }
+  .player.mini .play {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; padding: 0; border-radius: 50%;
+  }
+  .player.mini .fold { width: 24px; height: 24px; }
+  .player.mini .time { font-variant-numeric: tabular-nums; font-size: 0.85rem; white-space: nowrap; }
+  .reader.player-min .card { bottom: 60px; }
   /* three columns: time | transport (exactly centred in the player) | voice + speed */
-  .controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
-  .controls .time { justify-self: start; font-variant-numeric: tabular-nums; font-size: 0.9rem; white-space: nowrap; }
-  .controls .transport { display: flex; align-items: center; gap: 8px; }
-  .controls .transport > * { flex: none; }
-  .controls .settings { justify-self: end; display: flex; align-items: center; gap: 8px; }
-  .controls .play { flex: none; width: 44px; height: 44px; border-radius: 50%; }
+  /* Play sits in the middle column, so it is exactly centred in the player. The side columns
+     are equal (1fr): left holds time (at the edge) + prev (next to Play), right holds
+     next + repeat (next to Play) + voice/speed (at the edge). Items sharing a cell are
+     placed by justify-self. */
+  .controls {
+    display: grid; grid-template-columns: 1fr auto 1fr; grid-template-areas: 'left play right';
+    align-items: center; gap: 8px;
+  }
+  .controls .time { grid-area: left; justify-self: start; font-variant-numeric: tabular-nums; font-size: 0.9rem; white-space: nowrap; }
+  .controls .prev { grid-area: left; justify-self: end; }
+  .controls .play { grid-area: play; }
+  .controls .after-play { grid-area: right; justify-self: start; display: flex; align-items: center; gap: 8px; }
+  .controls .settings { grid-area: right; justify-self: end; display: flex; align-items: center; gap: 8px; }
+  .controls .play { flex: none; width: 40px; height: 40px; border-radius: 50%; }
   .controls button.icon { width: 36px; height: 36px; border-radius: 50%; }
   .controls .repeat { width: 36px; height: 36px; border-radius: 50%; }
   /* voice + speed: right-aligned pair of 34px pills in the player */
@@ -174,7 +207,7 @@ for (const k of keys) {
   .speed .x { color: var(--muted); margin-left: 1px; }
   button.icon { border: none; background: none; padding: 6px 8px; font-size: 1.05rem; }
 
-  .card { bottom: 108px; padding: 12px 16px; z-index: 2; }
+  .card { bottom: 104px; padding: 12px 16px; z-index: 2; }
   .card-head { display: flex; align-items: center; gap: 8px; }
   .card-word { flex: 1; font-size: 1.25rem; }
   .card-word .pos { font-size: 0.9rem; }
@@ -190,9 +223,9 @@ for (const k of keys) {
   }
   /* narrow screens: playback buttons on the first row, voice + speed on the second */
   @media (max-width: 600px) {
-    .controls { row-gap: 6px; column-gap: 4px; }
-    .controls .transport { gap: 4px; }
-    .controls .settings { grid-column: 1 / -1; justify-self: center; }
-    .card { bottom: 150px; }
+    .controls { grid-template-areas: 'left play right' 'set set set'; row-gap: 6px; column-gap: 4px; }
+    .controls .after-play { gap: 4px; }
+    .controls .settings { grid-area: set; justify-self: center; }
+    .card { bottom: 144px; }
   }
 </style>

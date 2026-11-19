@@ -13,10 +13,16 @@ const token = z.object({
   m: z.number().optional(), // member id: adjacent tokens with the same id share one underline
 });
 
+const span = z.tuple([z.number(), z.number()]);
 const sentence = z.object({
   en: z.string().optional(),
   ru: z.string().optional(),
   tokens: z.array(token),
+  // word correspondences (align.txt): character spans of the translation words, and units of
+  // [Dutch token indices, English word indices, Russian word indices]
+  enW: z.array(span).optional(),
+  ruW: z.array(span).optional(),
+  al: z.array(z.tuple([z.array(z.number()), z.array(z.number()), z.array(z.number())])).optional(),
 });
 
 // One narration of the text. Timings live here, not in the tokens, because they differ per voice.

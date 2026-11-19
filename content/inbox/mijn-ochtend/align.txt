@@ -1,0 +1,100 @@
+# Word correspondences: Dutch = English = Russian (one unit per line, "# N" = sentence N).
+# Words are matched left to right, case-insensitive; a side may stay empty.
+
+# 1
+Ik = I = Я
+sta op = get up = встаю
+elke = every = каждый
+dag = day = день
+om = at = в
+zeven = seven = семь
+uur = o'clock = часов
+
+# 2
+Eerst = First = Сначала
+neem = take = принимаю
+ik = I = я
+een = a =
+douche = shower = душ
+
+# 3
+Daarna = Then = Потом
+drink = drink = пью
+ik = I = я
+een = a =
+kop = cup = чашку
+koffie = of coffee = кофе
+in = in = на
+de = the =
+keuken = kitchen = кухне
+
+# 4
+Ik = I = я
+eet = eat = ем
+meestal = usually = Обычно
+brood = bread = хлеб
+met = with = с
+kaas = cheese = сыром
+
+# 5
+Om = At = В
+acht = eight = восемь
+uur = o'clock = часов
+naar = to = на
+mijn = my =
+werk = work = работу
+fiets = cycle = еду на велосипеде
+ik = I = я
+
+# 6
+Het = It = Это
+is = is =
+niet ver = not far = недалеко
+maar = but = но
+als = when = когда
+het = it =
+regent = rains = идёт дождь
+neem = take = еду
+ik = I = я
+de = the =
+bus = bus = на автобусе
+
+# 7
+Op = At = На
+mijn = =
+werk = work = работе
+zeg = say = говорю
+ik = I = я
+goedemorgen = good morning = доброе утро
+tegen = to =
+mijn = my =
+collega's = colleagues = коллегам
+
+# 8
+In = At = В
+het = the =
+weekend = weekend = выходные
+is = is =
+mijn = my = моё
+ochtend = morning = утро
+anders = different = другое
+
+# 9
+Ik = I = Я
+slaap = sleep = сплю
+lang = late = долго
+en = and = и
+ik = I =
+ontbijt = have breakfast = завтракаю
+rustig = relaxed = спокойно
+met = with = со
+mijn = my = своей
+vriendin = girlfriend = девушкой
+
+# 10
+Daarna = Then = Потом
+ruimen op = tidy up = убираем
+we = we = мы
+samen = together = вместе
+het = the =
+huis = house = дом

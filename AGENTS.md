@@ -25,3 +25,4 @@ Consult these guides before working on related tasks:
 
 Adding a lesson: see README "Как добавить урок". After `npm run lesson -- <slug>`, fill every empty `ru` in `src/data/vocab.json` (Russian glosses, context-appropriate for A1–A2) and write `ru.txt` if the user gave only nl/en. Python runs via `python -m uv run` inside `pipeline/`.
 Also review the members-of-the-sentence analysis (print tokens with `syn`) and fix parser mistakes in meta.json `"syntax"` (README step 5), following Russian school grammar: predicate includes aux/copula/particle, prepositions and articles go with their noun, particles and conjunctions are not underlined.
+Also write `content/inbox/<slug>/align.txt` (Dutch = English = Russian word units per sentence, see pipeline/wordalign.py) and check that the pipeline prints no `! align` warnings.

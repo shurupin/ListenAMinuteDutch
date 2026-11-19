@@ -18,8 +18,31 @@ VOICES = [
 TICKS = 10_000_000  # edge-tts offsets are in 100ns units
 
 
+CACHE_DIR = Path(__file__).resolve().parent / ".cache"
+
+
 def tts(text: str, out_mp3: Path, voice: str = DEFAULT_VOICE, rate: str = "+0%") -> list[dict]:
-    """Synthesize text to MP3, return word timings [{text, start, end}] in seconds."""
+    """Synthesize text to MP3, return word timings [{text, start, end}] in seconds.
+    Cached: the same text/voice/rate reuses the existing MP3 and its timings (each synthesis
+    produces slightly different bytes, which would show up as changed audio in git)."""
+    import hashlib
+    import json
+
+    key = hashlib.sha1(f"{voice}|{rate}|{text}".encode("utf-8")).hexdigest()
+    cache = CACHE_DIR / f"{out_mp3.parent.name}-{out_mp3.stem}.json"
+    if out_mp3.exists() and cache.exists():
+        data = json.loads(cache.read_text(encoding="utf-8"))
+        if data.get("key") == key:
+            print(f"  (cached audio: {out_mp3.name})")
+            return data["words"]
+
+    words = _synthesize(text, out_mp3, voice, rate)
+    CACHE_DIR.mkdir(exist_ok=True)
+    cache.write_text(json.dumps({"key": key, "words": words}), encoding="utf-8")
+    return words
+
+
+def _synthesize(text: str, out_mp3: Path, voice: str, rate: str) -> list[dict]:
     import edge_tts
 
     async def run() -> list[dict]:

@@ -1,0 +1,153 @@
+# Word correspondences: Dutch = English = Russian (one unit per line, "# N" = sentence N).
+# Words are matched left to right, case-insensitive; a side may stay empty.
+# A word already used is reused only if no unused occurrence is left (e.g. "I’ve" = ik + heb).
+
+# 1
+Ik = I =
+vraag me af = wonder = Интересно
+hoeveel = how many = сколько
+ongelukken = accidents = несчастных случаев
+ik = I’ve = у меня
+in = in = в
+mijn = my =
+leven = life = жизни
+heb gehad = had = было
+
+# 2
+Ik = I’ve = У меня
+heb gehad = had = было
+een paar = a few = несколько
+ernstige = serious = серьёзных
+ongelukken = ones = несчастных случаев
+waarbij = where = в результате которых
+ik = I’ve = я
+in = in = в
+ziekenhuis = hospital = больнице
+ben beland = ended up = оказывался
+
+# 3
+Verkeersongelukken = Traffic accidents = Дорожные аварии
+zijn = are =
+het ergst = the worst = хуже всего
+
+# 4
+Ze = They’re = Они
+zijn = They’re =
+altijd = always = всегда
+pijnlijk = painful = причиняют боль
+
+# 5
+Ik = I = У меня
+heb gehad = haven’t had = было
+niet = haven’t = не
+al te veel = too many = так уж много
+werkgerelateerde = work-related = связанных с работой
+ongelukken = accidents = несчастных случаев
+
+# 6
+Ik = I = Я
+neem aan = suppose = полагаю
+dat = =
+dat = that’s = это
+komt doordat = because = потому что
+ik = I = я
+kantoorwerk = office work = офисной работой
+doe = do = занимаюсь
+en = and = и
+dat = that’s = это
+niet = not = не
+zo = so = так
+gevaarlijk = dangerous = опасно
+is = that’s =
+
+# 7
+De meeste = Most = Большинство
+van = of =
+mijn = my = со мной
+ongelukken = accidents = несчастных случаев
+gebeuren = are = происходит
+in en om = around =
+het huis = the house = дома
+
+# 8
+Ik = I’ve = Я
+ben kwijtgeraakt = lost = потерял
+de tel = count = счёт
+van = of = тому
+het aantal = the number of = сколько
+keren = times = раз
+ik = I’ve =
+met een hamer = with a hammer = молотком
+op = = по
+mijn = my = себя
+duim = thumb = большому пальцу
+heb geslagen = hit = ударял
+
+# 9
+Ik = I’m = У меня
+ben = I’m =
+ook = also = также
+heel = really = очень
+goed = good = хорошо
+er in = at = получается
+op te staan = standing up = вставать
+en = and = и
+mijn = my =
+hoofd = head = головой
+ergens tegen = on something = обо что-нибудь
+te stoten = hitting = ударяться
+
+# 10
+Toch = though = Но всё же
+ben = I’m =
+ik = I’m = я
+niet = not = не
+zo = as = так
+erg = bad = плох
+als = as = как
+mijn = my = мой
+vriend = friend = друг
+
+# 11
+Hij = He’s = Он
+is = He’s =
+een = a =
+wandelend = looking for somewhere to happen = ходячая
+ongeluk = accident = катастрофа
+
+# 12
+Bijna = Almost = Почти
+elke = every = каждый
+keer = time = раз
+dat = = когда
+we = we = мы
+elkaar ontmoeten = meet = встречаемся
+heeft = has = есть
+hij = he = у него
+een = some = какая-нибудь
+verhaal = story = история
+te vertellen = to tell = рассказать
+over = about = о
+zijn = his = его
+laatste = latest = последнем
+ongeluk = accident = несчастном случае
+
+# 13
+Hij = He’s = Он
+is = He’s =
+echt = quite = просто
+ongelooflijk = unbelievable = невероятен
+
+# 14
+Ik = I =
+denk = think = Думаю
+dat = =
+ik = I’d = я
+erg = very = очень
+bezorgd = worried = волновался
+zou zijn = I’d be = бы
+als = if = если
+ik = I =
+zijn = his = его
+moeder = mother = матерью
+was = were = бы был

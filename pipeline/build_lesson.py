@@ -10,6 +10,7 @@ Inbox folder:
   nl.txt      Dutch text, paragraphs separated by a blank line
   en.txt      English translation, same paragraphs (optional)
   ru.txt      Russian translation, same paragraphs (optional)
+  align.txt   Dutch = English = Russian word correspondences per sentence (optional, see wordalign.py)
   audio.*     your recording (mp3/wav/m4a/ogg/...): becomes an extra "Запись" voice.
 
 Every lesson is voiced by all TTS voices in audio.VOICES (Fenna, Maarten).
@@ -24,6 +25,7 @@ from pathlib import Path
 
 import audio
 import nlp
+import wordalign
 from timing import assign_times
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -104,6 +106,8 @@ def main() -> None:
         attach_translation(para, ru_paras[i] if i < len(ru_paras) else None, "ru")
         paragraphs.append(para)
     apply_syntax_fixes(paragraphs, syntax_fix)
+    if (src / "align.txt").exists():  # Dutch word <-> EN/RU translation word correspondences
+        wordalign.apply(paragraphs, src / "align.txt")
 
     all_tokens = [t for p in paragraphs for s in p["sentences"] for t in s["tokens"]]
     word_tokens = [t for t in all_tokens if "key" in t]

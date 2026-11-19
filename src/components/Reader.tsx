@@ -11,7 +11,11 @@ type Token = {
   t: string; ws: boolean; lemma?: string; pos?: string; key?: string; zipf?: number;
   syn?: string; m?: number; start?: number; end?: number;
 };
-type Sentence = { start: number; end: number; en?: string; ru?: string; tokens: Token[] };
+type Align = [number[], number[], number[]]; // [Dutch token indices, EN word indices, RU word indices]
+type Sentence = {
+  start: number; end: number; en?: string; ru?: string; tokens: Token[];
+  enW?: [number, number][]; ruW?: [number, number][]; al?: Align[];
+};
 type Paragraph = { en?: string; ru?: string; sentences: Sentence[] };
 type ReaderLesson = { title: string; audio: string; duration: number; clips: Record<string, string>; paragraphs: Paragraph[] };
 
@@ -19,7 +23,7 @@ type ReaderLesson = { title: string; audio: string; duration: number; clips: Rec
 type RawToken = Omit<Token, 'start' | 'end'>;
 type RawLesson = {
   title: string;
-  paragraphs: { en?: string; ru?: string; sentences: { en?: string; ru?: string; tokens: RawToken[] }[] }[];
+  paragraphs: { en?: string; ru?: string; sentences: (Omit<Sentence, 'start' | 'end' | 'tokens'> & { tokens: RawToken[] })[] }[];
   voices: Voice[];
 };
 type Voice = {
@@ -65,6 +69,31 @@ const SYNTAX = [
   { id: 'A', label: 'Определение', hint: 'какой? чей?', mark: '~~~' },
   { id: 'D', label: 'Обстоятельство', hint: 'где? куда? когда? как?', mark: '-·-·-' },
 ];
+
+/** A translation with its words as spans; words in `hi` get the correspondence frame. */
+function Translation({ text, spans, hi, lang, onHover }: {
+  text: string; spans?: [number, number][]; hi?: number[]; lang: string;
+  onHover?: (j: number | null) => void; // hovering a translation word highlights its unit too
+}) {
+  if (!spans?.length) return <span class={`tr ${lang}`} lang={lang}>{text}</span>;
+  const parts = [];
+  let pos = 0;
+  spans.forEach(([a, b], j) => {
+    if (a > pos) parts.push(text.slice(pos, a));
+    parts.push(
+      <span
+        class={hi?.includes(j) ? 'tw al' : 'tw'}
+        onMouseEnter={() => onHover?.(j)}
+        onMouseLeave={() => onHover?.(null)}
+      >
+        {text.slice(a, b)}
+      </span>,
+    );
+    pos = b;
+  });
+  if (pos < text.length) parts.push(text.slice(pos));
+  return <span class={`tr ${lang}`} lang={lang}>{parts}</span>;
+}
 
 /** Adjacent tokens of the same member (same syn + m) go under one continuous underline. */
 function groupMembers(tokens: Token[]) {
@@ -113,6 +142,9 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
   const [activeWord, setActiveWord] = useState<string | null>(null);
   const [activeSent, setActiveSent] = useState(-1);
   const [selected, setSelected] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
+  // a hovered English/Russian word: sentence "pi.si", language and word index
+  const [hoveredTr, setHoveredTr] = useState<{ key: string; lang: 'en' | 'ru'; j: number } | null>(null);
   const [repeat, setRepeatState] = useState(false);
   const repeatRef = useRef(false);
   const setRepeat = (v: boolean) => { repeatRef.current = v; setRepeatState(v); };
@@ -120,6 +152,7 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
   const [showFreq, setShowFreq] = useState(true);
   const [showTrans, setShowTrans] = useState(true);
   const [showSyntax, setShowSyntax] = useState(false);
+  const [playerMin, setPlayerMin] = useState(false);
   const [saved, setSaved] = useState<Record<string, SavedWord>>({});
 
   // Load prefs/saved words after mount (localStorage is client-only).
@@ -130,11 +163,12 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
     setShowFreq(p.showFreq);
     setShowTrans(p.showTrans);
     setShowSyntax(!!p.showSyntax);
+    setPlayerMin(!!(p as { playerMin?: boolean }).playerMin);
     setSaved(load(KEY_SAVED, {}));
   }, []);
   useEffect(
-    () => save(KEY_PREFS, { rate, showFreq, showTrans, showSyntax, voice: voiceId }),
-    [rate, showFreq, showTrans, showSyntax, voiceId],
+    () => save(KEY_PREFS, { rate, showFreq, showTrans, showSyntax, playerMin, voice: voiceId }),
+    [rate, showFreq, showTrans, showSyntax, playerMin, voiceId],
   );
 
   const changeVoice = (id: string) => {
@@ -374,10 +408,36 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
   };
 
   const sel = selected ? tokenAt(selected) : null;
+
+  // Word correspondences of the hovered word (Dutch, English or Russian; without a mouse, of
+  // the selected Dutch word): all words of its unit in the three languages get a frame.
+  // A word in several units ("I've" = ik + heb) lights up all of them.
+  const aligned = (() => {
+    let key: string;
+    let side: 0 | 1 | 2;
+    let idx: number;
+    if (hoveredTr) {
+      key = hoveredTr.key;
+      side = hoveredTr.lang === 'en' ? 1 : 2;
+      idx = hoveredTr.j;
+    } else {
+      const focus = hovered ?? selected;
+      if (!focus) return null;
+      const [pi, si, ti] = focus.split('.').map(Number);
+      key = `${pi}.${si}`;
+      side = 0;
+      idx = ti;
+    }
+    const [pi, si] = key.split('.').map(Number);
+    const units = lesson.paragraphs[pi]?.sentences[si]?.al?.filter((g) => g[side].includes(idx)) ?? [];
+    if (!units.length) return null;
+    const merge = (n: 0 | 1 | 2) => [...new Set(units.flatMap((g) => g[n]))];
+    return { key, nl: merge(0), en: merge(1), ru: merge(2) };
+  })();
   let gsiCounter = 0;
 
   return (
-    <div class={`reader${showFreq ? ' freq' : ''}${showSyntax ? ' syntax' : ''}`}>
+    <div class={`reader${showFreq ? ' freq' : ''}${showSyntax ? ' syntax' : ''}${playerMin ? ' player-min' : ''}`}>
       <audio
         ref={audioRef}
         src={audioUrl(lesson.audio)}
@@ -454,7 +514,17 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
                             const id = `${pi}.${si}.${ti}`;
                             if (!t.key) return <>{t.t}</>;
                             const cls = `w b${band(t.zipf).id}${activeWord === id ? ' act' : ''}${selected === id ? ' sel' : ''}`;
-                            return <span class={cls} onClick={() => clickWord(id)}>{t.t}</span>;
+                            const inUnit = aligned?.key === `${pi}.${si}` && aligned.nl.includes(ti);
+                            return (
+                              <span
+                                class={inUnit ? `${cls} al` : cls}
+                                onClick={() => clickWord(id)}
+                                onMouseEnter={() => setHovered(id)}
+                                onMouseLeave={() => setHovered((h) => (h === id ? null : h))}
+                              >
+                                {t.t}
+                              </span>
+                            );
                           };
                           const last = g.items[g.items.length - 1];
                           const trailing = last.t.ws ? ' ' : '';
@@ -468,8 +538,16 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
                             <>{inner}{trailing}</>
                           );
                         })}{' '}
-                        {perSentence && s.en && <span class="tr en" lang="en">{s.en}</span>}
-                        {perSentence && s.ru && <span class="tr ru" lang="ru">{s.ru}</span>}
+                        {perSentence && s.en && (
+                          <Translation text={s.en} spans={s.enW} lang="en"
+                            hi={aligned?.key === `${pi}.${si}` ? aligned.en : undefined}
+                            onHover={(j) => setHoveredTr(j == null ? null : { key: `${pi}.${si}`, lang: 'en', j })} />
+                        )}
+                        {perSentence && s.ru && (
+                          <Translation text={s.ru} spans={s.ruW} lang="ru"
+                            hi={aligned?.key === `${pi}.${si}` ? aligned.ru : undefined}
+                            onHover={(j) => setHoveredTr(j == null ? null : { key: `${pi}.${si}`, lang: 'ru', j })} />
+                        )}
                       </span>
                     );
                   })}
@@ -515,45 +593,61 @@ export default function Reader({ slug, data, gloss, counts }: Props) {
         </div>
       )}
 
-      <div class="player">
-        <input
-          type="range" min={0} max={lesson.duration} step={0.01} value={time} aria-label="Позиция"
-          onInput={(e) => {
-            const a = audioRef.current!;
-            rangeRef.current = null;
-            a.currentTime = Number((e.currentTarget as HTMLInputElement).value);
-          }}
-        />
-        <div class="controls">
+      {playerMin ? (
+        // minimised: play/pause + time + expand; playback and shortcuts keep working
+        <div class="player mini">
+          <button class="primary play" title="Пробел" onClick={toggle}>{playing ? <IconPause size={14} /> : <IconPlay size={14} />}</button>
           <span class="muted time">{fmt(time)} / {fmt(lesson.duration)}</span>
-          <div class="transport">
-            <button class="icon" title="Предыдущее предложение (←)" onClick={() => step(-1)}><IconPrev size={18} /></button>
-            <button class="primary play" title="Пробел" onClick={toggle}>{playing ? <IconPause size={18} /> : <IconPlay size={18} />}</button>
-            <button class="icon" title="Следующее предложение (→)" onClick={() => step(1)}><IconNext size={18} /></button>
-            <button class={repeat ? 'on repeat' : 'repeat'} title="Повторять предложение (R)" onClick={toggleRepeat} aria-pressed={repeat}>
-              <IconRepeat size={18} />
+          <button class="fold" title="Развернуть плеер" aria-label="Развернуть плеер" onClick={() => setPlayerMin(false)}>
+            <span class="up"><IconChevron size={14} /></span>
+          </button>
+        </div>
+      ) : (
+        <div class="player">
+          <div class="progress">
+            <input
+              type="range" min={0} max={lesson.duration} step={0.01} value={time} aria-label="Позиция"
+              onInput={(e) => {
+                const a = audioRef.current!;
+                rangeRef.current = null;
+                a.currentTime = Number((e.currentTarget as HTMLInputElement).value);
+              }}
+            />
+            <button class="fold" title="Свернуть плеер" aria-label="Свернуть плеер" onClick={() => setPlayerMin(true)}>
+              <IconChevron size={16} />
             </button>
           </div>
-          <div class="settings">
-            {data.voices.length > 1 && (
-              <span class="voice">
-                <select
-                  value={voice.id}
-                  onChange={(e) => changeVoice((e.currentTarget as HTMLSelectElement).value)}
-                  aria-label="Голос"
-                  title="Голос"
-                >
-                  {data.voices.map((v) => (
-                    <option value={v.id}>{v.name}</option>
-                  ))}
-                </select>
-                <IconChevron size={14} />
-              </span>
-            )}
-            <SpeedControl rate={rate} onChange={setRate} />
+          <div class="controls">
+            <span class="muted time">{fmt(time)} / {fmt(lesson.duration)}</span>
+            <button class="icon prev" title="Предыдущее предложение (←)" onClick={() => step(-1)}><IconPrev size={18} /></button>
+            <button class="primary play" title="Пробел" onClick={toggle}>{playing ? <IconPause size={18} /> : <IconPlay size={18} />}</button>
+            <div class="after-play">
+              <button class="icon" title="Следующее предложение (→)" onClick={() => step(1)}><IconNext size={18} /></button>
+              <button class={repeat ? 'on repeat' : 'repeat'} title="Повторять предложение (R)" onClick={toggleRepeat} aria-pressed={repeat}>
+                <IconRepeat size={18} />
+              </button>
+            </div>
+            <div class="settings">
+              {data.voices.length > 1 && (
+                <span class="voice">
+                  <select
+                    value={voice.id}
+                    onChange={(e) => changeVoice((e.currentTarget as HTMLSelectElement).value)}
+                    aria-label="Голос"
+                    title="Голос"
+                  >
+                    {data.voices.map((v) => (
+                      <option value={v.id}>{v.name}</option>
+                    ))}
+                  </select>
+                  <IconChevron size={14} />
+                </span>
+              )}
+              <SpeedControl rate={rate} onChange={setRate} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
