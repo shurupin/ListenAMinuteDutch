@@ -76,10 +76,12 @@ const SYNTAX = [
 /** English words among the this-many most frequent in SUBTLEX-US show their rank (1 = "you"). */
 const EN_TOP = 9999;
 
-function Translation({ text, spans, hi, lang, onHover, ranks }: {
+function Translation({ text, spans, hi, lang, onHover, ranks, linked, onPick }: {
   text: string; spans?: [number, number][]; hi?: number[]; lang: string;
   onHover?: (j: number | null) => void; // hovering a translation word highlights its unit too
   ranks?: (number | null)[]; // SUBTLEX-US frequency rank of every word (null: not listed)
+  linked?: number[]; // words that have a Dutch counterpart (align.txt)
+  onPick?: (j: number) => void; // click on such a word = click on its Dutch word
 }) {
   if (!spans?.length) return <span class={`tr ${lang}`} lang={lang}>{text}</span>;
   const parts = [];
@@ -88,7 +90,8 @@ function Translation({ text, spans, hi, lang, onHover, ranks }: {
     if (a > pos) parts.push(text.slice(pos, a));
     parts.push(
       <span
-        class={hi?.includes(j) ? 'tw al' : 'tw'}
+        class={`tw${hi?.includes(j) ? ' al' : ''}${linked?.includes(j) ? ' linked' : ''}`}
+        onClick={linked?.includes(j) ? () => onPick?.(j) : undefined}
         onMouseEnter={() => onHover?.(j)}
         onMouseLeave={() => onHover?.(null)}
       >
@@ -362,6 +365,17 @@ export default function Reader({ slug, data, gloss, counts, enWords = {} }: Prop
     else playInText(id);
   };
 
+  /** Click on an English (side 1) or Russian (side 2) word = click on its Dutch original.
+   *  Several Dutch words in the unit ("met een hamer"): the rarest one, i.e. the content word. */
+  const clickTranslation = (pi: number, si: number, side: 1 | 2, j: number) => {
+    const s = lesson.paragraphs[pi].sentences[si];
+    const nl = [...new Set((s.al ?? []).filter((g) => g[side].includes(j)).flatMap((g) => g[0]))]
+      .filter((ti) => s.tokens[ti]?.key);
+    if (!nl.length) return;
+    const ti = nl.reduce((a, b) => ((s.tokens[b].zipf ?? 0) < (s.tokens[a].zipf ?? 0) ? b : a));
+    clickWord(`${pi}.${si}.${ti}`);
+  };
+
   useEffect(() => preloadCut(lesson.audio), [lesson.audio]);
 
   const toggleSave = (id: string) => {
@@ -386,7 +400,7 @@ export default function Reader({ slug, data, gloss, counts, enWords = {} }: Prop
     if (!selected) return;
     const onDown = (e: PointerEvent) => {
       const el = e.target as Element | null;
-      if (el?.closest('.w, .card, button, input, select, textarea, a, label')) return;
+      if (el?.closest('.w, .tw.linked, .card, button, input, select, textarea, a, label')) return;
       setSelected(null);
       startFromRef.current = null;
     };
@@ -553,11 +567,15 @@ export default function Reader({ slug, data, gloss, counts, enWords = {} }: Prop
                           <Translation text={s.en} spans={enWords[`${pi}.${si}`]?.spans ?? s.enW} lang="en"
                             ranks={enWords[`${pi}.${si}`]?.ranks}
                             hi={aligned?.key === `${pi}.${si}` ? aligned.en : undefined}
+                            linked={s.al?.flatMap((g) => g[1])}
+                            onPick={(j) => clickTranslation(pi, si, 1, j)}
                             onHover={(j) => setHoveredTr(j == null ? null : { key: `${pi}.${si}`, lang: 'en', j })} />
                         )}
                         {perSentence && s.ru && (
                           <Translation text={s.ru} spans={s.ruW} lang="ru"
                             hi={aligned?.key === `${pi}.${si}` ? aligned.ru : undefined}
+                            linked={s.al?.flatMap((g) => g[2])}
+                            onPick={(j) => clickTranslation(pi, si, 2, j)}
                             onHover={(j) => setHoveredTr(j == null ? null : { key: `${pi}.${si}`, lang: 'ru', j })} />
                         )}
                       </span>
